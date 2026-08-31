@@ -1,6 +1,6 @@
 # 基于网络搜索与信息传递的中国期货价格预测 —— 复现
 
-> **非官方复现（unofficial reproduction）** · 代码为独立实现，未使用原论文作者的代码。
+> **非官方复现（unofficial reproduction）** · 仅做自主学习
 
 ## 复现对象
 
