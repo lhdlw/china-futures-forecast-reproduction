@@ -1,0 +1,348 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang xml:lang>
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <title>论文1阅读总结</title>
+  <style>
+
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+
+ul.task-list[class]{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+font-size: inherit;
+width: 0.8em;
+margin: 0 0.8em 0.2em -1.6em;
+vertical-align: middle;
+}
+.display.math{display: block; text-align: center; margin: 0.5rem auto;}
+</style>
+  <style type="text/css">
+@page { margin: 18mm 16mm; }
+body {
+font-family: "Microsoft YaHei", "PingFang SC", "Segoe UI", system-ui, sans-serif;
+font-size: 13px;
+line-height: 1.7;
+color: #1a1a1a;
+max-width: 900px;
+margin: 0 auto;
+padding: 24px 8px;
+}
+h1 { font-size: 22px; border-bottom: 2px solid #2a78d6; padding-bottom: 8px; }
+h2 { font-size: 18px; margin-top: 28px; border-bottom: 1px solid #c3c2b7; padding-bottom: 4px; }
+h3 { font-size: 15px; margin-top: 22px; }
+h4 { font-size: 14px; margin-top: 16px; }
+blockquote { color: #52514e; border-left: 4px solid #c3c2b7; margin: 12px 0; padding: 2px 14px; }
+code { background: #f0efec; padding: 1px 5px; border-radius: 3px; font-family: Consolas, monospace; font-size: 12px; }
+pre { background: #f5f4f1; padding: 12px; border-radius: 6px; overflow-x: auto; }
+pre code { background: none; padding: 0; }
+table { border-collapse: collapse; width: 100%; margin: 14px 0; font-size: 12px; }
+th, td { border: 1px solid #d9d7d0; padding: 6px 10px; text-align: left; }
+th { background: #f0efec; font-weight: 600; }
+tr:nth-child(even) td { background: #faf9f7; }
+hr { border: none; border-top: 1px solid #d9d7d0; margin: 24px 0; }
+a { color: #2a78d6; }
+</style>
+</head>
+<body>
+<header id="title-block-header">
+<h1 class="title">论文1阅读总结</h1>
+</header>
+<h1 id="论文1-阅读总结">论文1 阅读总结</h1>
+<blockquote>
+<p><strong>标题</strong>：Text-based soybean futures price forecasting:
+A two-stage deep learning approach <strong>作者</strong>：Wuyue An、Lin
+Wang（华中科技大学管理学院）、Yu-Rong Zeng（湖北经济学院信息工程学院）
+<strong>期刊</strong>：Journal of Forecasting, 2023, 42(2): 312–330.
+DOI: 10.1002/for.2909
+<strong>数据可得性</strong>：可向通讯作者合理索取（zyrhbue@gmail.com）</p>
+</blockquote>
+<hr />
+<h2 id="一一句话概括">一、一句话概括</h2>
+<p>用<strong>微博文本</strong>（做情感分析 + 涨跌分类）提取 3
+个文本特征，结合 10
+个经济变量，用<strong>逐步回归</strong>筛选因子，最后用<strong>两阶段
+LSTM（TSH-LSTM）</strong>预测中国大豆期货价格，证明”文本特征确实能提升预测精度”。</p>
+<hr />
+<h2 id="二研究问题与动机">二、研究问题与动机</h2>
+<ol type="1">
+<li>传统大豆期货预测只依赖<strong>历史价格/宏观数据</strong>，忽略了社交媒体情绪等外部因素；</li>
+<li>现有情感分析<strong>没考虑领域情感词</strong>（很多词在期货语境下含义不同），也<strong>只挖到文本表层特征</strong>（情感），没挖到深层特征（涨跌）；</li>
+<li>本文用”情感词典 + 社会网络分析”改进情感分析，用 textRCNN
+挖涨跌深层特征。</li>
+</ol>
+<hr />
+<h2 id="三整体框架四阶段">三、整体框架（四阶段）</h2>
+<pre><code>阶段1  数据采集与预处理    数值数据(10) + 微博文本 → 清洗/编码/归一化
+阶段2  文本特征挖掘        CDCSA情感分析 → 情感分
+                           textRCNN涨跌分类 → 涨跌标签
+阶段3  逐步回归筛选        13个候选因子 → 显著因子（SPSS）
+阶段4  TSH-LSTM预测        单变量LSTM + 多变量LSTM → 误差倒数法融合</code></pre>
+<hr />
+<h2 id="四数据集详解">四、数据集详解</h2>
+<h3 id="数值数据10-个变量">4.1 数值数据（10 个变量）</h3>
+<p>时间：<strong>2011-07-29 ~ 2021-07-19</strong>，有效 <strong>795
+天</strong>。来源：国家统计局、全国农产品成本收益资料汇编、世界银行 +
+交易所行情。</p>
+<table>
+<thead>
+<tr>
+<th>类别</th>
+<th>变量</th>
+<th>中文</th>
+<th>主要来源</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>期货市场</td>
+<td>X1 持仓量</td>
+<td>大豆期货持仓</td>
+<td>交易所</td>
+</tr>
+<tr>
+<td>期货市场</td>
+<td>X2 成交量</td>
+<td>大豆期货成交</td>
+<td>交易所</td>
+</tr>
+<tr>
+<td>期货市场</td>
+<td>X4 美豆期货价</td>
+<td>CBOT美豆</td>
+<td>世界银行/Wind</td>
+</tr>
+<tr>
+<td>大豆基本面</td>
+<td>X3 大豆现货价</td>
+<td>现货价</td>
+<td>国家统计局</td>
+</tr>
+<tr>
+<td>大豆基本面</td>
+<td>X7 黄玉米期货收盘价</td>
+<td>玉米C0</td>
+<td>交易所</td>
+</tr>
+<tr>
+<td>大豆基本面</td>
+<td>X8 黄玉米持仓量</td>
+<td>玉米持仓</td>
+<td>交易所</td>
+</tr>
+<tr>
+<td>大豆基本面</td>
+<td>X9 食用油现货指数</td>
+<td>食用油指数</td>
+<td>国家统计局</td>
+</tr>
+<tr>
+<td>经济环境</td>
+<td>X5 汇率</td>
+<td>美元/人民币</td>
+<td>世界银行/央行</td>
+</tr>
+<tr>
+<td>经济环境</td>
+<td>X6 WTI原油现货价</td>
+<td>WTI现货</td>
+<td>世界银行/EIA</td>
+</tr>
+<tr>
+<td>经济环境</td>
+<td>X10 WTI原油期货价</td>
+<td>WTI期货</td>
+<td>EIA</td>
+</tr>
+</tbody>
+</table>
+<blockquote>
+<p>依赖变量 Y =
+大豆期货<strong>收盘价</strong>（注意：论文2用开盘价，论文1用收盘价）。
+训练/测试划分：前 <strong>85%</strong> 训练、后 <strong>15%</strong>
+测试；训练集里再分 15% 作验证集。</p>
+</blockquote>
+<h3 id="文本数据微博-粮油网站">4.2 文本数据（微博 + 粮油网站）</h3>
+<ul>
+<li><strong>来源</strong>：微博上关于大豆期货的帖子 + “China
+Food”（粮油类网站）相关信息；</li>
+<li><strong>采集</strong>：Python 3.7 网络爬虫，2011–2021 共约 10
+年；</li>
+<li><strong>最终产出 3
+个文本特征</strong>：<code>Sentimenttrend</code>（词典情感分）、<code>Imsentimenttrend</code>（CDCSA改进情感分）、<code>Labeltrend</code>（涨跌标签）。</li>
+</ul>
+<hr />
+<h2 id="五文本数据处理详解核心重点看这里">五、文本数据处理详解（核心，重点看这里）</h2>
+<p>文本是<strong>非结构化</strong>的（一句话、一段字），模型算不了。所以要分<strong>两条路</strong>把它变成<strong>数字</strong>：</p>
+<pre><code>微博文本（&quot;大豆今天大涨了！&quot;）
+        │
+        ├─ 路1：情感分析 CDCSA ──→ 每天一个&quot;情感分数&quot;（正=看多，负=看空）
+        │                         → 产出 X11 词典情感分、X12 CDCSA情感分
+        │
+        └─ 路2：涨跌分类 textRCNN ──→ 每条微博打&quot;涨/跌&quot;标签
+                                     → 产出 X13 涨跌标签</code></pre>
+<h3 id="路1cdcsa-情感分析改进情感分怎么算">5.1 路1：CDCSA
+情感分析（改进情感分怎么算）</h3>
+<p>CDCSA = 情感词典法 + 社会网络分析的度中心性 +
+并列/转折约束。分三步：</p>
+<p><strong>第 1 步：建”领域情感词典”</strong>
+把两个通用词典合并，并补充网络新词： -
+<strong>清华李军褒贬义词典</strong>（通用正/负情感词） - <strong>知网
+HowNet 情感词典</strong>（通用正/负情感词） - 用
+<strong>PMI（点互信息）</strong>
+识别并判定网络新词的情感倾向（比如”起飞”“割韭菜”这类词典里没有、但网上常用的词）</p>
+<blockquote>
+<p>为什么要”领域”词典？因为通用词典分不清期货语境——比如”暴跌”在通用词典是中性，但在期货语境是明确的负面词。</p>
+</blockquote>
+<p><strong>第 2 步：算”度中心性”，并识别并列/转折关系</strong> -
+<strong>度中心性</strong>：把情感词当节点，两个词若在同一条微博里<strong>共现</strong>就连一条边，构成一个词网络。某词的度中心性
+= 它连了几个词 /
+(总词数-1)。<strong>连得越多，说明这个词越”核心”、情感倾向越强</strong>（式1）。
+-
+<strong>并列关系</strong>（“大涨<strong>和</strong>利好”）：两个词情感倾向<strong>相同</strong>，互相加强；
+-
+<strong>转折关系</strong>（“涨了<strong>但是</strong>回落”）：两个词情感倾向<strong>相反</strong>，要反转。</p>
+<p><strong>第 3 步：加权求和得到每天的情感分</strong>
+把当天所有微博里的情感词按”极性 ×
+度中心性”，再用并列/转折关系修正正负号，累加 →
+得到<strong>当天整体情感分</strong>。</p>
+<blockquote>
+<p>结果：CDCSA 的 Accuracy/Precision/Recall/F1 = <strong>0.8 / 0.83 /
+0.81 / 0.82</strong>，比纯词典法（0.68）高，说明”度中心性 +
+并列转折”确实有用。</p>
+</blockquote>
+<h3 id="路2textrcnn-涨跌分类深层特征怎么挖">5.2 路2：textRCNN
+涨跌分类（深层特征怎么挖）</h3>
+<p>目标是：<strong>判断”某条微博的内容是在说涨还是跌”</strong>。做法是给它打标签再训练分类器。</p>
+<p><strong>打标签（式5）</strong>：用价格自己定义对错—— - 当天价 &gt;
+昨天价 → 标签 <strong>+1</strong>（涨） - 当天价 &lt; 昨天价 → 标签
+<strong>-1</strong>（跌）</p>
+<p><strong>textRCNN 模型</strong>（“文本循环卷积神经网络”）： 1.
+<strong>Word2vec
+词嵌入</strong>：把每个词变成一个向量（把”大涨”变成一串数字）； 2.
+<strong>BiLSTM</strong>：从正反两个方向读句子，学上下文（“涨”前面是”不”还是”大”，意思完全不同）；
+3. <strong>拼接</strong>：每个词的左上下文 + 词本身 + 右上下文
+拼成一个向量（式2–4）； 4. <strong>Max
+pooling</strong>：从所有词向量里取最强的特征； 5. <strong>Softmax
+分类</strong>：输出”涨/跌”。</p>
+<p>对比了 Transformer、TextCNN、DPCNN、TextRNN_Att
+等模型，<strong>textRCNN 10 折交叉验证准确率最高（62.5%）</strong>。</p>
+<blockquote>
+<p>所以 X13 <code>Labeltrend</code>
+就是”每天被判定为涨的微博比例/倾向”，它反映了<strong>文本里隐含的涨跌信号</strong>。</p>
+</blockquote>
+<h3 id="三个文本特征小结">5.3 三个文本特征小结</h3>
+<table>
+<thead>
+<tr>
+<th>特征</th>
+<th>含义</th>
+<th>怎么来的</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>X11 Sentimenttrend</td>
+<td>词典法情感分</td>
+<td>清华+HowNet 词典，正负词数比</td>
+</tr>
+<tr>
+<td>X12 Imsentimenttrend</td>
+<td>CDCSA 改进情感分</td>
+<td>词典 + 度中心性 + 并列转折</td>
+</tr>
+<tr>
+<td>X13 Labeltrend</td>
+<td>涨跌标签特征</td>
+<td>textRCNN 分类（Word2vec+BiLSTM）</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="六特征筛选逐步回归spss">六、特征筛选：逐步回归（SPSS）</h2>
+<p>把 13 个候选因子（10 数值 + 3
+文本）做<strong>逐步回归</strong>：逐个引入，F 检验/t
+检验显著的留下，不显著的剔除。</p>
+<p><strong>结果</strong>：最终模型 <strong>只剔除了
+X9（食用油现货指数）</strong>，其余 12 个全保留，<strong>调整 R² =
+0.922</strong>。说明这 12 个因子（含 3
+个文本特征）对大豆期货价格解释力很强。</p>
+<hr />
+<h2 id="七预测模型tsh-lstm两阶段">七、预测模型：TSH-LSTM（两阶段）</h2>
+<pre><code>阶段A 单变量 LSTM：只输入历史价格 → 预测 S(t)   （短期准，长期差）
+阶段B 多变量 LSTM：输入筛选后的12个因子 → 预测 M(t)（长期稳）
+        ↓ 误差倒数法加权融合
+  最终预测 = w1·S(t) + w2·M(t)  （误差小的权重更大）</code></pre>
+<ul>
+<li>最优序列长度 <strong>Seq_length = 7</strong>（约一周）；</li>
+<li>环境：Anaconda + Python 3.7 + PyTorch 1.13.1；</li>
+<li>超参用网格搜索。</li>
+</ul>
+<hr />
+<h2 id="八结果">八、结果</h2>
+<table>
+<thead>
+<tr>
+<th>模型</th>
+<th>MAPE</th>
+<th>RMSE</th>
+<th>MAE</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>TSH-LSTM</strong></td>
+<td><strong>5.891%</strong></td>
+<td><strong>0.094</strong></td>
+<td><strong>0.068</strong></td>
+</tr>
+<tr>
+<td>单变量 LSTM</td>
+<td>8.716%</td>
+<td>0.102</td>
+<td>0.084</td>
+</tr>
+<tr>
+<td>多变量 LSTM</td>
+<td>26.531%</td>
+<td>0.217</td>
+<td>0.182</td>
+</tr>
+<tr>
+<td>XGBoost</td>
+<td>59.862%</td>
+<td>0.314</td>
+<td>0.276</td>
+</tr>
+</tbody>
+</table>
+<p>TSH-LSTM 全面最优，证明”文本特征 + 两阶段融合”有效。</p>
+<hr />
+<h2 id="九创新点">九、创新点</h2>
+<ol type="1">
+<li><strong>CDCSA
+情感分析方法</strong>：把”度中心性（社会网络分析）“引入情感词典法，并识别<strong>并列/转折</strong>关系，弥补了通用词典在期货领域不准的缺陷（准确率
+0.68→0.8）；</li>
+<li><strong>textRCNN
+挖深层涨跌特征</strong>：不只做表层情感，还用”价格涨跌当标签”训练深度模型，从文本里挖出涨跌信号；</li>
+<li><strong>两阶段 TSH-LSTM</strong>：单变量 + 多变量
+LSTM，用<strong>误差倒数法</strong>融合，兼顾短期精度和长期稳健；</li>
+<li><strong>经济计量 +
+深度学习结合</strong>：先用逐步回归筛选因子（可解释），再喂给深度学习（高精度）。</li>
+</ol>
+<hr />
+<h2 id="十局限与可复现性">十、局限与可复现性</h2>
+<ol type="1">
+<li><strong>只在大豆期货一个品种上验证</strong>，推广性未知；</li>
+<li><strong>微博文本拿不到</strong>是最大复现障碍：论文没公开语料，历史微博（尤其
+2011–2015）几乎爬不到，只能发邮件向作者索取；</li>
+<li>深度学习仍是”黑箱”，缺可解释性；未来方向：ITD 分解、Granger
+因果检验、SHAP/LIME。</li>
+</ol>
+</body>
+</html>

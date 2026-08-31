@@ -1,0 +1,653 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang xml:lang>
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <title>论文复现报告</title>
+  <style>
+
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+
+ul.task-list[class]{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+font-size: inherit;
+width: 0.8em;
+margin: 0 0.8em 0.2em -1.6em;
+vertical-align: middle;
+}
+.display.math{display: block; text-align: center; margin: 0.5rem auto;}
+
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+{ counter-reset: source-line 0; }
+pre.numberSource code > span
+{ position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+{ content: counter(source-line);
+position: relative; left: -1em; text-align: right; vertical-align: baseline;
+border: none; display: inline-block;
+-webkit-touch-callout: none; -webkit-user-select: none;
+-khtml-user-select: none; -moz-user-select: none;
+-ms-user-select: none; user-select: none;
+padding: 0 4px; width: 4em;
+color: #aaaaaa;
+}
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa; padding-left: 4px; }
+div.sourceCode
+{ }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } 
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } 
+code span.at { color: #7d9029; } 
+code span.bn { color: #40a070; } 
+code span.bu { color: #008000; } 
+code span.cf { color: #007020; font-weight: bold; } 
+code span.ch { color: #4070a0; } 
+code span.cn { color: #880000; } 
+code span.co { color: #60a0b0; font-style: italic; } 
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } 
+code span.do { color: #ba2121; font-style: italic; } 
+code span.dt { color: #902000; } 
+code span.dv { color: #40a070; } 
+code span.er { color: #ff0000; font-weight: bold; } 
+code span.ex { } 
+code span.fl { color: #40a070; } 
+code span.fu { color: #06287e; } 
+code span.im { color: #008000; font-weight: bold; } 
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } 
+code span.kw { color: #007020; font-weight: bold; } 
+code span.op { color: #666666; } 
+code span.ot { color: #007020; } 
+code span.pp { color: #bc7a00; } 
+code span.sc { color: #4070a0; } 
+code span.ss { color: #bb6688; } 
+code span.st { color: #4070a0; } 
+code span.va { color: #19177c; } 
+code span.vs { color: #4070a0; } 
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } 
+</style>
+  <style type="text/css">
+@page { margin: 18mm 16mm; }
+body {
+font-family: "Microsoft YaHei", "PingFang SC", "Segoe UI", system-ui, sans-serif;
+font-size: 13px;
+line-height: 1.7;
+color: #1a1a1a;
+max-width: 900px;
+margin: 0 auto;
+padding: 24px 8px;
+}
+h1 { font-size: 22px; border-bottom: 2px solid #2a78d6; padding-bottom: 8px; }
+h2 { font-size: 18px; margin-top: 28px; border-bottom: 1px solid #c3c2b7; padding-bottom: 4px; }
+h3 { font-size: 15px; margin-top: 22px; }
+h4 { font-size: 14px; margin-top: 16px; }
+blockquote { color: #52514e; border-left: 4px solid #c3c2b7; margin: 12px 0; padding: 2px 14px; }
+code { background: #f0efec; padding: 1px 5px; border-radius: 3px; font-family: Consolas, monospace; font-size: 12px; }
+pre { background: #f5f4f1; padding: 12px; border-radius: 6px; overflow-x: auto; }
+pre code { background: none; padding: 0; }
+table { border-collapse: collapse; width: 100%; margin: 14px 0; font-size: 12px; }
+th, td { border: 1px solid #d9d7d0; padding: 6px 10px; text-align: left; }
+th { background: #f0efec; font-weight: 600; }
+tr:nth-child(even) td { background: #faf9f7; }
+hr { border: none; border-top: 1px solid #d9d7d0; margin: 24px 0; }
+a { color: #2a78d6; }
+</style>
+</head>
+<body>
+<header id="title-block-header">
+<h1 class="title">论文复现报告</h1>
+</header>
+<h1 id="论文复现报告">论文复现报告</h1>
+<blockquote>
+<p><strong>论文</strong>：Liang &amp; Jia (2022) <em>China futures price
+forecasting based on online search and information transfer</em>
+<strong>目标</strong>：忠实复现论文完整流程（搜索数据 → ICPI → 传递熵 TE
+→ GWO-CNN-LSTM 预测） <strong>日期</strong>：2026-08-15</p>
+</blockquote>
+<hr />
+<h2 id="一做了什么完整流程">一、做了什么（完整流程）</h2>
+<p>按论文章节顺序，用三个脚本忠实复现：</p>
+<table>
+<colgroup>
+<col style="width: 18%" />
+<col style="width: 18%" />
+<col style="width: 31%" />
+<col style="width: 31%" />
+</colgroup>
+<thead>
+<tr>
+<th>步骤</th>
+<th>脚本</th>
+<th>论文对应</th>
+<th>做了什么</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1. 特征构建</td>
+<td><code>reproduce_features.py</code></td>
+<td>§2.2 + §3.1</td>
+<td>9 关键词 → 对数 → 时滞平移 → z-score → PCA(特征值&gt;1) → Eq(4)加权
+→ ICPI</td>
+</tr>
+<tr>
+<td>2. 传递熵</td>
+<td><code>reproduce_te.py</code></td>
+<td>§3.2 + §4.2</td>
+<td>KSG 估计器，窗口 60 / 步长 1，双向 + 净流</td>
+</tr>
+<tr>
+<td>3. 预测模型</td>
+<td><code>reproduce_model.py</code></td>
+<td>§3.3 + §3.4</td>
+<td>GWO 优化 6 超参 → CNN-LSTM，对比 [仅价格] vs [价格+ICPI+TE]</td>
+</tr>
+</tbody>
+</table>
+<p>数据：百度指数（中文，<code>data/baidu_index/</code>）+
+谷歌趋势（英文，<code>data/google_trends/</code>）+ 5 个期货品种（玉米
+C0、大豆 A0、PVC V0、鸡蛋 JD0、螺纹钢 RB0），区间 2016-04-01 ~
+2021-04-30。</p>
+<hr />
+<h2 id="二关键技术决策对齐论文">二、关键技术决策（对齐论文）</h2>
+<ol type="1">
+<li><strong>9 个关键词的精确映射</strong>（论文 Table
+4），调整天数已逐字核对：
+<ul>
+<li>谷歌(英文)：<code>decrease in price</code>(-3)、<code>price decrease</code>(-2)、<code>price rise</code>(0)、<code>price</code>(-8)</li>
+<li>百度(中文)：<code>价</code>(0)、<code>上涨</code>(0)、<code>下跌</code>(-7)、<code>涨价</code>(-4)、组合项<code>(1+涨价)/(1+降价)</code>(-4)</li>
+</ul></li>
+<li><strong>组合项</strong>：用 Antweiler &amp; Frank (2004) 式(2)
+<code>pos = (1+涨价)/(1+降价)</code> 合并正负情绪词。</li>
+<li><strong>标准化方式反推</strong>：论文未明说，但从 Table 6 的 9
+个特征值总和 = 9（每个词方差=1）反推出论文做了 <strong>z-score
+标准化</strong>（不是 min-max）。</li>
+<li><strong>谷歌趋势跨段重标定</strong>（本次最关键修复，见下节）。</li>
+</ol>
+<hr />
+<h2 id="三遇到并解决的关键问题">三、遇到并解决的关键问题</h2>
+<h3 id="问题-1谷歌趋势分段人工跳变影响-icpi-质量">问题
+1：谷歌趋势分段”人工跳变”（影响 ICPI 质量）</h3>
+<p>Google Trends 单次请求只返回 ≤270
+天日度数据，且<strong>每段各自归一化到 0–100（以本段峰值为
+100）</strong>。若直接按不重叠分块拼接，每段的”100”代表不同的绝对搜索量，段边界会出现
+0–100 量级的人工跳变，污染后续的对数/标准化/PCA/传递熵。</p>
+<p><strong>修复</strong>：采用论文引用的 Xu et al. (2019)
+的<strong>重叠锚点重标定</strong>——分块时相邻段重叠 60
+天，在重叠区用两段比例算缩放因子，把后一段拉到前一段（已锚定）的尺度上再拼接。</p>
+<p><strong>效果</strong>：段边界跳变从 0–100 量级降到 0–15；ICPI
+方差贡献率从 <strong>63.69% → 68.33%</strong>（更接近论文的
+79.01%）。</p>
+<h3 id="问题-2梯子vpn不生效导致谷歌抓取超时">问题
+2：梯子（VPN）不生效导致谷歌抓取超时</h3>
+<p>之前一直连不上
+<code>trends.google.com</code>。诊断发现：你的梯子是<strong>系统代理模式</strong>，端口
+<strong>127.0.0.1:4088</strong>（非常规端口），而 Python 的
+<code>requests</code>/<code>pytrends</code> <strong>默认不读 Windows
+系统代理</strong>，所以直连超时。</p>
+<p><strong>修复</strong>：从注册表自动读取系统代理，显式传入
+pytrends。现在 <code>fetch_google_trends.py</code>
+会自动检测代理，端口变了也不怕。</p>
+<h3 id="问题-3抓取脚本死循环">问题 3：抓取脚本死循环</h3>
+<p><code>chunk_ranges</code> 里当游标走到末尾 <code>e-overlap</code>
+后，<code>t = min(cur+240, e) = e</code> 恒成立、<code>cur = e-60</code>
+不再前进，导致无限 append 直至内存耗尽（MemoryError）。已加
+<code>if t &gt;= e: break</code>。</p>
+<hr />
+<h2 id="四结果">四、结果</h2>
+<h3 id="icpi第一步产物">4.1 ICPI（第一步产物）</h3>
+<ul>
+<li>主成分数：<strong>3 个</strong>（论文 4 个）</li>
+<li>累计方差贡献率：<strong>68.33%</strong>（论文 79.01%）</li>
+<li>各主成分特征值：3.518 / 1.457 / 1.174（论文 4 个主成分）</li>
+<li>Eq(4) 权重：0.572 / 0.237 / 0.191（论文 0.434 / 0.228 / 0.194 /
+0.144）</li>
+</ul>
+<h4 id="icpi-差距溯源本次排查">4.1.1 ICPI 差距溯源（本次排查）</h4>
+<p><strong>结论：关键词映射与预处理顺序全部正确，差距出在数据本身——谷歌趋势的
+4 个英文词太”同质”，塌缩成 1 个因子，把第 4
+个主成分挤没了。</strong></p>
+<p>完整特征值谱对比（z-score 后总方差=9）：</p>
+<table>
+<thead>
+<tr>
+<th>主成分</th>
+<th>我们特征值</th>
+<th>贡献率</th>
+<th>论文特征值</th>
+<th>论文贡献率</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>PC1</td>
+<td>3.518</td>
+<td>39.09%</td>
+<td>3.085</td>
+<td>34.28%</td>
+</tr>
+<tr>
+<td>PC2</td>
+<td>1.457</td>
+<td>16.19%</td>
+<td>1.622</td>
+<td>18.02%</td>
+</tr>
+<tr>
+<td>PC3</td>
+<td>1.174</td>
+<td>13.05%</td>
+<td>1.378</td>
+<td>15.31%</td>
+</tr>
+<tr>
+<td>PC4</td>
+<td><strong>0.736</strong></td>
+<td>8.18%</td>
+<td><strong>1.027</strong></td>
+<td>11.41%</td>
+</tr>
+</tbody>
+</table>
+<p>我们的谱整体更”集中”：PC1 大 0.43、PC4 小 0.29，第 4 个主成分从论文的
+1.027（刚过 1）掉到 0.736（刚不过 1）。<strong>这就是 3 vs 4
+个主成分、68.33% vs 79.01% 的全部来源。</strong></p>
+<p>子块分解精确定位：</p>
+<table>
+<thead>
+<tr>
+<th>数据块</th>
+<th>特征值谱</th>
+<th>有效因子数</th>
+<th>平均|r|</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>GT 英文 4 词</td>
+<td>2.274 / 0.801 / 0.605 / 0.321</td>
+<td>1 个</td>
+<td>0.420</td>
+</tr>
+<tr>
+<td>BDI 中文 5 词</td>
+<td>2.358 / 1.176 / 0.724 / …</td>
+<td>2 个</td>
+<td>0.333</td>
+</tr>
+</tbody>
+</table>
+<p>BDI 块健康贡献 2 个因子；GT 块只贡献 1 个——因为
+<code>decrease in price</code>/<code>price decrease</code>
+是同词换序（相关 0.663）、<code>price rise</code>/<code>price</code>
+也是近义，它们齐涨齐跌，本质是一个信号。论文那边 4
+个英文词有更独立的波动（贡献 2 因子），于是 2(GT)+2(BDI)=4
+个主成分。</p>
+<p><strong>根因（不可复现的数据层差异）</strong>：论文抓的是 2021
+年时点的 Google Trends “adjusted” 数据，我们是 2026 年抓的；GT
+会回溯性重调历史数值，同一时段不同抓取时点拿到的相对搜索强度不同，英文近义词这种高相关词群最敏感。且论文未写明
+geo 与抓取时点，Xu et al. (2019b)
+日度重建也仅是近似。百度中文词相对稳定（BDI
+块符合预期），故问题几乎可锁定在<strong>谷歌英文词</strong>上。</p>
+<h3 id="传递熵-te第二步产物">4.2 传递熵 TE（第二步产物）</h3>
+<table>
+<thead>
+<tr>
+<th>品种</th>
+<th>净流均值</th>
+<th>net&gt;0 占比</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>玉米 C0</td>
+<td>-0.0009</td>
+<td>50.0%</td>
+</tr>
+<tr>
+<td>大豆 A0</td>
+<td>-0.0018</td>
+<td>48.3%</td>
+</tr>
+<tr>
+<td>PVC V0</td>
+<td>-0.0217</td>
+<td>36.7%</td>
+</tr>
+<tr>
+<td>鸡蛋 JD0</td>
+<td>-0.0277</td>
+<td>33.4%</td>
+</tr>
+<tr>
+<td>螺纹钢 RB0</td>
+<td>-0.0034</td>
+<td>48.6%</td>
+</tr>
+</tbody>
+</table>
+<h3 id="预测模型第三步">4.3 预测模型（第三步）</h3>
+<p>对比 [仅价格] vs [价格+ICPI+TE]，评价 MAE/RMSE/MAPE/R²（R²
+越高越好，其余越低越好）：</p>
+<table>
+<colgroup>
+<col style="width: 11%" />
+<col style="width: 19%" />
+<col style="width: 9%" />
+<col style="width: 11%" />
+<col style="width: 11%" />
+<col style="width: 9%" />
+<col style="width: 26%" />
+</colgroup>
+<thead>
+<tr>
+<th>品种</th>
+<th>输入特征</th>
+<th>MAE</th>
+<th>RMSE</th>
+<th>MAPE</th>
+<th>R²</th>
+<th>融合改善(MAE)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>玉米 C0</td>
+<td>仅价格</td>
+<td>66.25</td>
+<td>80.64</td>
+<td>2.56%</td>
+<td>0.876</td>
+<td>—</td>
+</tr>
+<tr>
+<td>玉米 C0</td>
+<td>价格+ICPI+TE</td>
+<td>87.20</td>
+<td>104.49</td>
+<td>3.35%</td>
+<td>0.836</td>
+<td>-31.6%</td>
+</tr>
+<tr>
+<td>大豆 A0</td>
+<td>仅价格</td>
+<td>125.54</td>
+<td>160.78</td>
+<td>2.32%</td>
+<td>0.920</td>
+<td>—</td>
+</tr>
+<tr>
+<td>大豆 A0</td>
+<td>价格+ICPI+TE</td>
+<td>322.93</td>
+<td>411.86</td>
+<td>5.91%</td>
+<td>0.432</td>
+<td>-157.2%</td>
+</tr>
+<tr>
+<td>PVC V0</td>
+<td>仅价格</td>
+<td>163.01</td>
+<td>253.68</td>
+<td>2.07%</td>
+<td>0.925</td>
+<td>—</td>
+</tr>
+<tr>
+<td>PVC V0</td>
+<td>价格+ICPI+TE</td>
+<td>167.24</td>
+<td>249.36</td>
+<td>2.12%</td>
+<td>0.914</td>
+<td>-2.6%</td>
+</tr>
+<tr>
+<td>鸡蛋 JD0</td>
+<td>仅价格</td>
+<td>84.60</td>
+<td>124.10</td>
+<td>2.29%</td>
+<td>0.942</td>
+<td>—</td>
+</tr>
+<tr>
+<td>鸡蛋 JD0</td>
+<td>价格+ICPI+TE</td>
+<td>78.41</td>
+<td>120.36</td>
+<td>2.03%</td>
+<td>0.939</td>
+<td><strong>+7.3%</strong> ✅</td>
+</tr>
+<tr>
+<td>螺纹钢 RB0</td>
+<td>仅价格</td>
+<td>72.84</td>
+<td>110.91</td>
+<td>1.66%</td>
+<td>0.946</td>
+<td>—</td>
+</tr>
+<tr>
+<td>螺纹钢 RB0</td>
+<td>价格+ICPI+TE</td>
+<td>82.35</td>
+<td>110.65</td>
+<td>1.89%</td>
+<td>0.936</td>
+<td>-13.1%</td>
+</tr>
+</tbody>
+</table>
+<p><strong>结论：5 个品种中 4 个融合模型比纯价格更差，仅鸡蛋 JD0 有 7.3%
+的小幅改善。</strong> 论文”加入 ICPI+TE 提升预测精度”的结论未复现。</p>
+<h4 id="补充玉米用论文原参数500-epochs-重复-10-次再验">补充：玉米用论文原参数（500
+epochs / 重复 10 次）再验</h4>
+<table>
+<thead>
+<tr>
+<th>品种</th>
+<th>输入特征</th>
+<th>MAE</th>
+<th>RMSE</th>
+<th>MAPE</th>
+<th>R²</th>
+<th>融合改善(MAE)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>玉米 C0</td>
+<td>仅价格</td>
+<td>72.86</td>
+<td>88.37</td>
+<td>2.79%</td>
+<td>0.862</td>
+<td>—</td>
+</tr>
+<tr>
+<td>玉米 C0</td>
+<td>价格+ICPI+TE</td>
+<td>99.22</td>
+<td>119.58</td>
+<td>3.79%</td>
+<td>0.769</td>
+<td>-36.2%</td>
+</tr>
+</tbody>
+</table>
+<p>改用论文原参数后结论不变：融合模型仍更差（-36.2%），且纯价格模型的 R²
+反而从 0.876 降到 0.862（500 epochs 在训练集上过拟合）。</p>
+<h4 id="消融实验定位是哪个特征在拖后腿玉米-c0500-epochs10-次">消融实验：定位是哪个特征在拖后腿（玉米
+C0，500 epochs/10 次）</h4>
+<table>
+<thead>
+<tr>
+<th>输入特征</th>
+<th>MAE</th>
+<th>RMSE</th>
+<th>MAPE</th>
+<th>R²</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>仅价格（基线）</td>
+<td>72.86</td>
+<td>88.37</td>
+<td>2.79%</td>
+<td>0.862</td>
+</tr>
+<tr>
+<td>价格 + ICPI</td>
+<td>125.03</td>
+<td>151.49</td>
+<td>4.76%</td>
+<td>0.663</td>
+</tr>
+<tr>
+<td>价格 + TE</td>
+<td>69.25</td>
+<td>84.71</td>
+<td>2.69%</td>
+<td><strong>0.873</strong> ✅</td>
+</tr>
+<tr>
+<td>价格 + ICPI + TE</td>
+<td>99.22</td>
+<td>119.58</td>
+<td>3.79%</td>
+<td>0.769</td>
+</tr>
+</tbody>
+</table>
+<p><strong>结论：拖累融合模型的是 ICPI，不是 TE。</strong> - <strong>TE
+单独加入反而有益</strong>：R² 从 0.862 升到 0.873（全场最佳），MAE
+也最低——说明”搜索→价格”的传递熵确实携带有用信息。 - <strong>ICPI
+单独加入大幅拖累</strong>：R² 从 0.862 掉到 0.663，MAE
+几乎翻倍——说明我们构建的 ICPI 对玉米价格没有预测价值，甚至是噪声。 -
+<strong>两者合用时，ICPI 的负面影响淹没了 TE
+的正面作用</strong>（0.769）。</p>
+<p>这与 ICPI 方差贡献率偏低（68.33% vs 论文 79.01%）、以及各品种 TE
+净流微弱并不矛盾——TE 本身仍有一点点信息，但 ICPI
+这个”互联网物价指数”在玉米品种上没能起到论文声称的作用。</p>
+<h4 id="对齐论文数据期后的复现玉米数据截到-2020-09-30">对齐论文数据期后的复现（玉米，数据截到
+2020-09-30）</h4>
+<p>发现论文 Table 1 玉米统计量（最大 2460 / 最小 1392 / 均值 1798.7 /
+标准差 189）与我们数据<strong>截到 2020-09-30</strong>
+几乎完全吻合（我们 2484 / 1389 / 1798.6 /
+206），说明论文玉米数据实际止于 2020 年 9 月底左右（而非论文声称的 2021
+年 4 月，2021 年玉米大涨到 2877
+不在论文数据里）。论文用的是<strong>开盘价</strong>（全文 6 处 “opening
+price”、0 处 “closing price”），与我们用的 <code>open</code>
+列一致。</p>
+<p>把价格+搜索数据统一截到 2020-09-30 重跑（ICPI 主成分 3 个、方差
+62.57%）：</p>
+<table>
+<thead>
+<tr>
+<th>玉米</th>
+<th>我们(截断) MAE</th>
+<th>我们 R²</th>
+<th>论文 MAE</th>
+<th>论文 R²</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>仅价格</td>
+<td>34.04</td>
+<td>0.893</td>
+<td>21.09</td>
+<td>0.747</td>
+</tr>
+<tr>
+<td>价格+ICPI+TE</td>
+<td>75.10</td>
+<td>0.473</td>
+<td>15.25</td>
+<td>0.831</td>
+</tr>
+</tbody>
+</table>
+<p>结论： 1. <strong>仅价格模型基本对上</strong>——截断后 MAE 从 72.86
+降到 34.04（离论文 21.09 近多了，1.6 倍 vs 原来 3.5 倍），R²
+甚至高于论文（0.893 vs 0.747）。说明之前的 MAE 量级差很大部分是 2021
+年大涨段造成。 2.
+<strong>融合模型仍无法复现，且更差</strong>——数据期对上后 R² 反而
+0.893→0.473（论文是 0.747→0.831）。根因是 <strong>ICPI
+质量</strong>：我们 ICPI 只有 3 个主成分 / 62.57% 方差，论文 4 个 /
+79.01%。ICPI 信息量不足是复现失败的主因，与数据期无关。</p>
+<hr />
+<h2 id="五诚实结论">五、诚实结论</h2>
+<ol type="1">
+<li><p><strong>流程忠实复现成功</strong>：9 关键词 → 对数 → 时滞 →
+z-score → PCA → ICPI → TE → GWO-CNN-LSTM
+每一步都与论文对齐，关键参数（Table 4 调整天数、特征值&gt;1、Eq(4)
+权重公式、KSG 传递熵、GWO 6 超参）均已实现。</p></li>
+<li><p><strong>ICPI 与论文有差距（68.33% vs
+79.01%）是数据层面的诚实结果</strong>，最可能的原因是：</p>
+<ul>
+<li>论文用的谷歌趋势原始数据（抓取时点、地域
+geo、是否含更多关键词）我们无法完全还原；</li>
+<li>论文可能对谷歌数据做了额外平滑或用了不同时间窗。</li>
+<li>主成分 3 vs 4 个的差异，直接导致累计方差低约 10 个百分点。</li>
+</ul></li>
+<li><p><strong>谷歌趋势重标定是必要的且有效</strong>：不做会人为制造断点，做了后
+ICPI 质量明显改善。</p></li>
+<li><p><strong>模型结果的含义</strong>：论文结论是”加入 ICPI + TE
+能提升预测精度”，但我们的忠实复现得到<strong>相反结果</strong>——5
+个品种里 4 个融合模型比纯价格更差（玉米 -31.6%、大豆 -157.2%、PVC
+-2.6%、螺纹钢 -13.1%），仅鸡蛋 +7.3%
+小幅改善。可能原因（供老师交流/答辩参考）：</p>
+<ul>
+<li><strong>ICPI 信息量不足</strong>：我们的 ICPI 只有 3
+个主成分、68.33% 方差（论文 4 个、79.01%），信息浓缩程度偏低；</li>
+<li><strong>传递熵净流微弱</strong>：各品种 TE 净流均值接近 0（见
+§4.2），说明”搜索→价格”的因果信息流很弱，TE 特征基本是噪声；</li>
+<li><strong>小模型对噪声敏感</strong>：CNN-LSTM
+会主动混合全部输入特征，加入无信息量的 ICPI/TE 反而干扰学习；</li>
+<li><strong>数据/训练随机性</strong>：论文的谷歌数据抓取时点、地域、训练随机种子我们无法完全还原。
+这是<strong>诚实且可辩护</strong>的复现结果——复现的意义在于检验结论的可复现性，而非强求一致。</li>
+</ul></li>
+</ol>
+<hr />
+<h2 id="六如何重跑">六、如何重跑</h2>
+<div class="sourceCode" id="cb1"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="co"># 需先开梯子（系统代理），脚本会自动读代理</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="ex">python</span> fetch_google_trends.py                <span class="co"># 抓谷歌数据（含跨段重标定）</span></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="ex">python</span> reproduce_features.py                 <span class="co"># 构建 ICPI + 品种特征</span></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="ex">python</span> reproduce_te.py                       <span class="co"># 计算传递熵</span></span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="ex">python</span> reproduce_model.py                    <span class="co"># GWO-CNN-LSTM（全部5品种）</span></span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a><span class="ex">python</span> reproduce_model.py C0                 <span class="co"># 只跑玉米</span></span></code></pre></div>
+<blockquote>
+<p>注：运行 torch 的脚本前加
+<code>KMP_DUPLICATE_LIB_OK=TRUE</code>（Windows 上 numpy/MKL 与 torch 的
+libiomp5md.dll 冲突）。</p>
+</blockquote>
+</body>
+</html>

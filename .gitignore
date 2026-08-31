@@ -1,0 +1,16 @@
+# ===== 版权材料：论文 PDF 与全文（不公开，请通过 DOI 获取）=====
+04_论文与笔记/原文1_An2023_大豆期货文本预测.pdf
+04_论文与笔记/原文2_LiangJia2022_中国期货价格预测.pdf
+04_论文与笔记/论文全文_China_futures.txt
+
+# ===== 专有搜索数据：百度指数 / 谷歌趋势原始数据（不公开，见采集说明）=====
+03_数据/baidu_index_百度指数/
+03_数据/google_trends_谷歌趋势/
+
+# ===== 通用 =====
+__pycache__/
+*.py[cod]
+*.log
+.DS_Store
+Thumbs.db
+.ipynb_checkpoints/
