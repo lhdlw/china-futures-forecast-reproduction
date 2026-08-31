@@ -35,7 +35,7 @@ Liang, J., & Jia, G. (2022). *China futures price forecasting based on online se
   [开盘价] vs [开盘价+ICPI+TE] → GWO-CNN-LSTM 预测
 ```
 
-## 复现结论（诚实汇报）
+## 复现结论
 
 1. **流程忠实复现成功**：关键词映射、预处理顺序、PCA、传递熵、GWO-CNN-LSTM 均与论文对齐。
 2. **论文"加入 ICPI+TE 能提升预测精度"的结论未能复现**：5 个品种中 4 个融合模型反而比"仅价格"更差（玉米 -31.6%、大豆 -157%、PVC -2.6%、螺纹钢 -13%），仅鸡蛋 +7.3% 小幅改善。
